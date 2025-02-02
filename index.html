@@ -48,12 +48,13 @@
 
   <script type="module">
     import confetti from 'https://cdn.skypack.dev/canvas-confetti';
+    
     const yesButton = document.getElementById('yesButton');
     const noButton = document.getElementById('noButton');
     const imageDisplay = document.getElementById('imageDisplay');
     const valentineQuestion = document.getElementById('valentineQuestion');
     const responseButtons = document.getElementById('responseButtons');
-  
+
     let noClickCount = 0;
     let buttonHeight = 48; // Starting height in pixels
     let buttonWidth = 80;
@@ -67,14 +68,24 @@
       "./images/image6.gif",
       "./images/image7.gif"
     ];
-  
+    
+    // Google Apps Script URL
+    const scriptURL = "https://script.google.com/macros/s/AKfycby6pKvvyCHP0pDTHDJIDX2bq8ojOczCAc32C-Bm4lgUWnzBNjkiQFykioz_sEJyQMIR/exec";
+
+    function sendResponse(choice) {
+      fetch(`${scriptURL}?response=${choice}`)
+        .then(response => response.text())
+        .then(data => console.log("Response recorded:", data))
+        .catch(error => console.error("Error:", error));
+    }
+
     noButton.addEventListener('click', function() {
       if (noClickCount < 5) {
         noClickCount++;
         imageDisplay.src = imagePaths[noClickCount];
-        buttonHeight += 35; // Increase height by 5px on each click
+        buttonHeight += 35; // Increase height by 35px on each click
         buttonWidth += 35;
-        fontSize += 25; // Increase font size by 1px on each click
+        fontSize += 25; // Increase font size
         yesButton.style.height = `${buttonHeight}px`; // Update button height
         yesButton.style.width = `${buttonWidth}px`;
         yesButton.style.fontSize = `${fontSize}px`; // Update font size
@@ -82,13 +93,15 @@
           noButton.textContent = ["No", "its the weekend:((", "pretty please", "ARE YOU SURE SURE??", "Not very non chalant of me to do this", "ig"][noClickCount];
         }
       }
+      sendResponse('No');
     });
-  
+
     yesButton.addEventListener('click', () => {
       imageDisplay.src = './images/image7.gif'; // Change to image7.gif
       valentineQuestion.textContent = "Yayyy!!!"; // Change the question text
       responseButtons.style.display = 'none'; // Hide both buttons
       confetti(); // Trigger confetti animation
+      sendResponse('Yes');
     });
   </script>  
 </body>
